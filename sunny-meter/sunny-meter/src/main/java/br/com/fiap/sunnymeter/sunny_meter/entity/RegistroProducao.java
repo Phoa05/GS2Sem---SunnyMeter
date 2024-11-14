@@ -12,7 +12,11 @@ public class RegistroProducao {
     @GeneratedValue
     private UUID id;
 
-    private UUID instalacaoId;
+    @ManyToOne
+    @JoinColumn(name = "instalacao_id", nullable = false)
+    private Instalacao instalacao;
+
     private double producaoKwh;
     private long medicaoTimestamp;
 }
+

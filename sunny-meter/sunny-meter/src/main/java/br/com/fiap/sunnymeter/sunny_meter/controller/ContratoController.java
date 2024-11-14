@@ -1,6 +1,7 @@
 package br.com.fiap.sunnymeter.sunny_meter.controller;
 
 import br.com.fiap.sunnymeter.sunny_meter.entity.Contrato;
+import br.com.fiap.sunnymeter.sunny_meter.exceptions.EntityNotFoundException;
 import br.com.fiap.sunnymeter.sunny_meter.service.ContratoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class ContratoController {
     public ResponseEntity<Contrato> getContrato(@PathVariable UUID id) {
         return contratoService.getContrato(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new EntityNotFoundException("Contrato não encontrado com o ID: " + id));
     }
 
     @PutMapping("/{id}")
@@ -38,14 +39,20 @@ public class ContratoController {
         try {
             return ResponseEntity.ok(contratoService.updateContrato(id, contratoAtualizado));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            throw new EntityNotFoundException("Contrato não encontrado para atualização com o ID: " + id);
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteContrato(@PathVariable UUID id) {
-        contratoService.deleteContrato(id);
+        if (!contratoService.deleteContrato(id)) {
+            throw new EntityNotFoundException("Contrato não encontrado para deleção com o ID: " + id);
+        }
         return ResponseEntity.noContent().build();
     }
-}
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
+    }
+}

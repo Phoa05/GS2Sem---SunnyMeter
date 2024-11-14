@@ -9,5 +9,6 @@ import java.util.UUID;
 
 public interface RegistroProducaoRepository extends JpaRepository<RegistroProducao, UUID> {
     List<RegistroProducao> findAllByInstalacaoIdAndMedicaoTimestampBetween(
-            Long instalacaoId, LocalDateTime inicio, LocalDateTime fim);
+            UUID instalacaoId, long inicio, long fim);
 }
+

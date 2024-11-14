@@ -1,6 +1,7 @@
 package br.com.fiap.sunnymeter.sunny_meter.controller;
 
 import br.com.fiap.sunnymeter.sunny_meter.entity.Cliente;
+import br.com.fiap.sunnymeter.sunny_meter.exceptions.EntityNotFoundException;
 import br.com.fiap.sunnymeter.sunny_meter.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class ClienteController {
     public ResponseEntity<Cliente> getCliente(@PathVariable UUID id) {
         return clienteService.getCliente(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com o ID: " + id));
     }
 
     @PutMapping("/{id}")
@@ -38,14 +39,20 @@ public class ClienteController {
         try {
             return ResponseEntity.ok(clienteService.updateCliente(id, clienteAtualizado));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            throw new EntityNotFoundException("Cliente não encontrado para atualização com o ID: " + id);
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCliente(@PathVariable UUID id) {
-        clienteService.deleteCliente(id);
+        if (!clienteService.deleteCliente(id)) {
+            throw new EntityNotFoundException("Cliente não encontrado para deleção com o ID: " + id);
+        }
         return ResponseEntity.noContent().build();
     }
-}
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
+    }
+}

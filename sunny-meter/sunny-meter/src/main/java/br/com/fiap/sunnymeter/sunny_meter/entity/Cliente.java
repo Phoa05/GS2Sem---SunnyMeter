@@ -18,4 +18,5 @@ public class Cliente {
     private String cep;
     private String endereco;
     private boolean ativo = true;
+
 }

@@ -1,6 +1,7 @@
 package br.com.fiap.sunnymeter.sunny_meter.controller;
 
 import br.com.fiap.sunnymeter.sunny_meter.entity.RegistroConsumo;
+import br.com.fiap.sunnymeter.sunny_meter.exceptions.EntityNotFoundException;
 import br.com.fiap.sunnymeter.sunny_meter.service.RegistroConsumoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class RegistroConsumoController {
     public ResponseEntity<RegistroConsumo> getRegistroConsumo(@PathVariable UUID id) {
         return registroConsumoService.getRegistroConsumo(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new EntityNotFoundException("Registro de Consumo não encontrado com o ID: " + id));
     }
 
     @PutMapping("/{id}")
@@ -38,13 +39,20 @@ public class RegistroConsumoController {
         try {
             return ResponseEntity.ok(registroConsumoService.updateRegistroConsumo(id, registroAtualizado));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            throw new EntityNotFoundException("Registro de Consumo não encontrado para atualização com o ID: " + id);
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRegistroConsumo(@PathVariable UUID id) {
-        registroConsumoService.deleteRegistroConsumo(id);
+        if (!registroConsumoService.deleteRegistroConsumo(id)) {
+            throw new EntityNotFoundException("Registro de Consumo não encontrado para deleção com o ID: " + id);
+        }
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
     }
 }

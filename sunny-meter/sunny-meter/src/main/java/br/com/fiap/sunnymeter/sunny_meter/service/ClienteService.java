@@ -27,6 +27,17 @@ public class ClienteService {
         return clienteRepository.findById(clienteId);
     }
 
+    public Cliente updateCliente(UUID clienteId, Cliente clienteAtualizado) {
+        return clienteRepository.findById(clienteId).map(cliente -> {
+            cliente.setNome(clienteAtualizado.getNome());
+            cliente.setDocumento(clienteAtualizado.getDocumento());
+            cliente.setTipo(clienteAtualizado.getTipo());
+            cliente.setCep(clienteAtualizado.getCep());
+            cliente.setEndereco(clienteAtualizado.getEndereco());
+            return clienteRepository.save(cliente);
+        }).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+    }
+
     public void deleteCliente(UUID clienteId) {
         clienteRepository.findById(clienteId).ifPresent(cliente -> {
             cliente.setAtivo(false);
@@ -34,3 +45,4 @@ public class ClienteService {
         });
     }
 }
+

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,10 +23,20 @@ public class RegistroConsumoService {
         return registroConsumoRepository.findAll();
     }
 
-    public double calcularConsumoTotal(UUID instalacaoId, long inicio, long fim) {
-        return registroConsumoRepository.findAllByInstalacaoIdAndMedicaoTimestampBetween(instalacaoId, inicio, fim)
-                .stream()
-                .mapToDouble(RegistroConsumo::getConsumoKwh)
-                .sum();
+    public Optional<RegistroConsumo> getRegistroConsumo(UUID id) {
+        return registroConsumoRepository.findById(id);
+    }
+
+    public RegistroConsumo updateRegistroConsumo(UUID id, RegistroConsumo registroAtualizado) {
+        return registroConsumoRepository.findById(id).map(registro -> {
+            registro.setInstalacaoId(registroAtualizado.getInstalacaoId());
+            registro.setConsumoKwh(registroAtualizado.getConsumoKwh());
+            registro.setMedicaoTimestamp(registroAtualizado.getMedicaoTimestamp());
+            return registroConsumoRepository.save(registro);
+        }).orElseThrow(() -> new RuntimeException("Registro de consumo não encontrado"));
+    }
+
+    public void deleteRegistroConsumo(UUID id) {
+        registroConsumoRepository.deleteById(id);
     }
 }

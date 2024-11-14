@@ -5,8 +5,8 @@ import br.com.fiap.sunnymeter.sunny_meter.repository.RegistroProducaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,11 +23,20 @@ public class RegistroProducaoService {
         return registroProducaoRepository.findAll();
     }
 
-    public double calcularProducaoTotal(Long instalacaoId, LocalDateTime inicio, LocalDateTime fim) {
-        return registroProducaoRepository
-                .findAllByInstalacaoIdAndMedicaoTimestampBetween(instalacaoId, inicio, fim)
-                .stream()
-                .mapToDouble(RegistroProducao::getProducaoKwh)
-                .sum();
+    public Optional<RegistroProducao> getRegistroProducao(UUID id) {
+        return registroProducaoRepository.findById(id);
+    }
+
+    public RegistroProducao updateRegistroProducao(UUID id, RegistroProducao registroAtualizado) {
+        return registroProducaoRepository.findById(id).map(registro -> {
+            registro.setInstalacaoId(registroAtualizado.getInstalacaoId());
+            registro.setProducaoKwh(registroAtualizado.getProducaoKwh());
+            registro.setMedicaoTimestamp(registroAtualizado.getMedicaoTimestamp());
+            return registroProducaoRepository.save(registro);
+        }).orElseThrow(() -> new RuntimeException("Registro de produção não encontrado"));
+    }
+
+    public void deleteRegistroProducao(UUID id) {
+        registroProducaoRepository.deleteById(id);
     }
 }

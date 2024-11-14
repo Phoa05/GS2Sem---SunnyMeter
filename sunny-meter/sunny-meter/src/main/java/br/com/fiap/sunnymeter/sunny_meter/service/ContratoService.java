@@ -5,7 +5,6 @@ import br.com.fiap.sunnymeter.sunny_meter.repository.ContratoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,19 +27,20 @@ public class ContratoService {
         return contratoRepository.findById(contratoId);
     }
 
-    public void deleteContrato(UUID contratoId) {
-        contratoRepository.findById(contratoId).ifPresent(contrato -> {
-            contrato.setAtivo(false); // Deleção lógica
-            contratoRepository.save(contrato);
-        });
+    public Contrato updateContrato(UUID contratoId, Contrato contratoAtualizado) {
+        return contratoRepository.findById(contratoId).map(contrato -> {
+            contrato.setClienteId(contratoAtualizado.getClienteId());
+            contrato.setInstalacaoId(contratoAtualizado.getInstalacaoId());
+            contrato.setDataInicio(contratoAtualizado.getDataInicio());
+            contrato.setDuracaoContrato(contratoAtualizado.getDuracaoContrato());
+            return contratoRepository.save(contrato);
+        }).orElseThrow(() -> new RuntimeException("Contrato não encontrado"));
     }
 
-    public boolean isContratoValido(UUID contratoId) {
-        return contratoRepository.findById(contratoId)
-                .map(contrato -> {
-                    LocalDate dataExpiracao = contrato.getDataInicio().plusMonths(contrato.getDuracaoContrato());
-                    return dataExpiracao.isAfter(LocalDate.now());
-                })
-                .orElse(false);
+    public void deleteContrato(UUID contratoId) {
+        contratoRepository.findById(contratoId).ifPresent(contrato -> {
+            contrato.setAtivo(false);
+            contratoRepository.save(contrato);
+        });
     }
 }

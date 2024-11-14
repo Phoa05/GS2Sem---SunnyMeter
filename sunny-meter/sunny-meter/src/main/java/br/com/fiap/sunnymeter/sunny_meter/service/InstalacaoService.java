@@ -27,10 +27,19 @@ public class InstalacaoService {
         return instalacaoRepository.findById(instalacaoId);
     }
 
+    public Instalacao updateInstalacao(UUID instalacaoId, Instalacao instalacaoAtualizada) {
+        return instalacaoRepository.findById(instalacaoId).map(instalacao -> {
+            instalacao.setEndereco(instalacaoAtualizada.getEndereco());
+            instalacao.setCep(instalacaoAtualizada.getCep());
+            return instalacaoRepository.save(instalacao);
+        }).orElseThrow(() -> new RuntimeException("Instalação não encontrada"));
+    }
+
     public void deleteInstalacao(UUID instalacaoId) {
         instalacaoRepository.findById(instalacaoId).ifPresent(instalacao -> {
-            instalacao.setAtivo(false); // Deleção lógica
+            instalacao.setAtivo(false);
             instalacaoRepository.save(instalacao);
         });
     }
 }
+

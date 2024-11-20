@@ -34,7 +34,7 @@ Contém a lógica de negócios, garantindo que as operações de manipulação d
 
 ### 4. **Controladores (Controller)**
 
-Define os endpoints da API RESTful para interação com as funcionalidades do sistema.
+Define os endpoints da API REST para interação com as funcionalidades do sistema.
 
 
 ## Entidades e seus Atributos
@@ -42,7 +42,7 @@ Define os endpoints da API RESTful para interação com as funcionalidades do si
 ### **RegistroProducao**
 
 - **`id`**: Identificador único (UUID).
-- **`dataProducao`**: Data da produção de energia (String, pode ser ajustado para `LocalDate`).
+- **`dataProducao`**: Data da produção de energia (String).
 - **`quantidade`**: Quantidade de energia produzida (double).
 - **`descricao`**: Informações adicionais sobre o registro (String).
 - **`instalacao`**: Relacionamento com uma instalação.

@@ -1,6 +1,6 @@
 # SunnyMeter - Sistema de Registro de Produção de Energia Solar
 
-##Integrantes:
+## Integrantes:
 - Pedro Henrique Oliveira Ananias rm550689
 - Danilo Urze rm99465
 - Kayque Moraes rm97592

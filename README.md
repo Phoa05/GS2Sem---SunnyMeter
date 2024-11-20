@@ -1,4 +1,4 @@
-# SunnyMeter - Sistema de Registro de Produção de Energia Solar
+# SunnyMeter - Global Solution 2 semestre
 
 ## Integrantes:
 - Pedro Henrique Oliveira Ananias rm550689

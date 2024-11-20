@@ -1,13 +1,12 @@
 package br.com.fiap.sunnymeter.sunny_meter.controller;
 
-import br.com.fiap.sunnymeter.sunny_meter.entity.Cliente;
-import br.com.fiap.sunnymeter.sunny_meter.exceptions.EntityNotFoundException;
+import br.com.fiap.sunnymeter.sunny_meter.model.Cliente;
 import br.com.fiap.sunnymeter.sunny_meter.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -18,41 +17,22 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @PostMapping
-    public Cliente addCliente(@RequestBody Cliente cliente) {
-        return clienteService.addCliente(cliente);
+    public Cliente criarCliente(@RequestBody Cliente cliente) {
+        return clienteService.criarCliente(cliente);
     }
 
     @GetMapping
-    public List<Cliente> listClientes() {
-        return clienteService.listClientes();
+    public List<Cliente> listarClientes() {
+        return clienteService.listarClientes();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Cliente> getCliente(@PathVariable UUID id) {
-        return clienteService.getCliente(id)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com o ID: " + id));
+    @GetMapping("/{clienteUuid}")
+    public Optional<Cliente> buscarCliente(@PathVariable UUID clienteUuid) {
+        return clienteService.buscarCliente(clienteUuid);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Cliente> updateCliente(@PathVariable UUID id, @RequestBody Cliente clienteAtualizado) {
-        try {
-            return ResponseEntity.ok(clienteService.updateCliente(id, clienteAtualizado));
-        } catch (RuntimeException e) {
-            throw new EntityNotFoundException("Cliente não encontrado para atualização com o ID: " + id);
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCliente(@PathVariable UUID id) {
-        if (!clienteService.deleteCliente(id)) {
-            throw new EntityNotFoundException("Cliente não encontrado para deleção com o ID: " + id);
-        }
-        return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException ex) {
-        return ResponseEntity.status(404).body(ex.getMessage());
+    @DeleteMapping("/{clienteUuid}")
+    public boolean deletarCliente(@PathVariable UUID clienteUuid) {
+        return clienteService.deletarCliente(clienteUuid);
     }
 }

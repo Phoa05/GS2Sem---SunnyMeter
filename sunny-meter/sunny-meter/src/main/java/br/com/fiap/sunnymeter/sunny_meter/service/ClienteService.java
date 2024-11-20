@@ -1,12 +1,12 @@
 package br.com.fiap.sunnymeter.sunny_meter.service;
 
-import br.com.fiap.sunnymeter.sunny_meter.entity.Cliente;
-import br.com.fiap.sunnymeter.sunny_meter.exceptions.EntityNotFoundException;
+import br.com.fiap.sunnymeter.sunny_meter.model.Cliente;
 import br.com.fiap.sunnymeter.sunny_meter.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -15,37 +15,26 @@ public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    public Cliente addCliente(Cliente cliente) {
+    public Cliente criarCliente(Cliente cliente) {
+        cliente.setAtivo(true);
         return clienteRepository.save(cliente);
     }
 
-    public List<Cliente> listClientes() {
+    public List<Cliente> listarClientes() {
         return clienteRepository.findAll();
     }
 
-    public Cliente getCliente(UUID clienteId) {
-        return clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado"));
+    public Optional<Cliente> buscarCliente(UUID clienteUuid) {
+        return clienteRepository.findById(clienteUuid);
     }
 
-    public Cliente updateCliente(UUID clienteId, Cliente clienteAtualizado) {
-        return clienteRepository.findById(clienteId)
-                .map(cliente -> {
-                    cliente.setNome(clienteAtualizado.getNome());
-                    cliente.setDocumento(clienteAtualizado.getDocumento());
-                    cliente.setTipo(clienteAtualizado.getTipo());
-                    cliente.setCep(clienteAtualizado.getCep());
-                    cliente.setEndereco(clienteAtualizado.getEndereco());
-                    return clienteRepository.save(cliente);
-                })
-                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado para atualização"));
-    }
-
-    public boolean deleteCliente(UUID clienteId) {
-        clienteRepository.findById(clienteId).ifPresent(cliente -> {
-            cliente.setAtivo(false);
-            clienteRepository.save(cliente);
-        });
+    public boolean deletarCliente(UUID clienteUuid) {
+        Optional<Cliente> cliente = clienteRepository.findById(clienteUuid);
+        if (cliente.isPresent()) {
+            cliente.get().setAtivo(false);
+            clienteRepository.save(cliente.get());
+            return true;
+        }
         return false;
     }
 }

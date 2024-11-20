@@ -1,12 +1,12 @@
 package br.com.fiap.sunnymeter.sunny_meter.service;
 
-import br.com.fiap.sunnymeter.sunny_meter.entity.RegistroProducao;
-import br.com.fiap.sunnymeter.sunny_meter.exceptions.EntityNotFoundException;
+import br.com.fiap.sunnymeter.sunny_meter.model.RegistroProducao;
 import br.com.fiap.sunnymeter.sunny_meter.repository.RegistroProducaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -15,31 +15,23 @@ public class RegistroProducaoService {
     @Autowired
     private RegistroProducaoRepository registroProducaoRepository;
 
-    public RegistroProducao addRegistroProducao(RegistroProducao registroProducao) {
+    public RegistroProducao saveOrUpdateRegistroProducao(RegistroProducao registroProducao) {
         return registroProducaoRepository.save(registroProducao);
     }
 
-    public List<RegistroProducao> listRegistrosProducao() {
+    public List<RegistroProducao> getAllRegistrosProducao() {
         return registroProducaoRepository.findAll();
     }
 
-    public List<RegistroProducao> getRegistrosProducaoPorInstalacao(UUID instalacaoId, long inicio, long fim) {
-        return registroProducaoRepository.findAllByInstalacaoIdAndMedicaoTimestampBetween(instalacaoId, inicio, fim);
+    public Optional<RegistroProducao> getRegistroProducaoById(UUID id) {
+        return registroProducaoRepository.findById(id);
     }
 
-    public RegistroProducao updateRegistroProducao(UUID registroProducaoId, RegistroProducao registroProducaoAtualizado) {
-        return registroProducaoRepository.findById(registroProducaoId)
-                .map(registroProducao -> {
-                    registroProducao.setProducaoKwh(registroProducaoAtualizado.getProducaoKwh());
-                    registroProducao.setMedicaoTimestamp(registroProducaoAtualizado.getMedicaoTimestamp());
-                    return registroProducaoRepository.save(registroProducao);
-                })
-                .orElseThrow(() -> new EntityNotFoundException("Registro de Produção não encontrado"));
+    public void deleteRegistroProducao(UUID id) {
+        registroProducaoRepository.deleteById(id);
     }
 
-    public boolean deleteRegistroProducao(UUID registroProducaoId) {
-        registroProducaoRepository.findById(registroProducaoId)
-                .ifPresent(registroProducao -> registroProducaoRepository.delete(registroProducao));
-        return false;
+    public List<RegistroProducao> findByDataProducao(String dataProducao) {
+        return registroProducaoRepository.findByDataProducao(dataProducao);
     }
 }

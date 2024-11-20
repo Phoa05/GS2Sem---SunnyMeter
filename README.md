@@ -1,66 +1,104 @@
-# SunnyMeter - Global Solution 2 semestre
+# SunnyMeter - Global Solution 2º Semestre
 
-## Integrantes:
-- Pedro Henrique Oliveira Ananias rm550689
-- Danilo Urze rm99465
-- Kayque Moraes rm97592
+## Integrantes
+
+- Pedro Henrique Oliveira Ananias (RM550689)
+- Danilo Urze (RM99465)
+- Kayque Moraes (RM97592)
 
 ## Descrição
 
-O **SunnyMeter** é uma API REST para gerenciar registros de produção de energia solar. A aplicação foi desenvolvida em **Spring Boot**, utilizando **Spring Data JPA** para persistência, e organiza as entidades principais como **RegistroProducao**, **Cliente** e **Instalacao**.
+O **SunnyMeter** é uma API REST desenvolvida em **Spring Boot**, com o objetivo de gerenciar dados relacionados à produção de energia solar. O projeto utiliza **Spring Data JPA** para persistência e implementa uma estrutura modular para facilitar o desenvolvimento e a manutenção.
 
-## O que foi Implementado
+As principais entidades do sistema incluem **RegistroProducao**, **Cliente**, **Instalacao**, **Contrato** e **RegistroConsumo**, com endpoints RESTful para operações CRUD completas.
 
-1. **Camada de Modelos (Model):**
-   - Classes que representam as tabelas do banco de dados:
-     - **RegistroProducao**
-     - **Cliente**
-     - **Instalacao**
+## Estrutura do Projeto
 
-2. **Repositórios (Repository):**
-   - Interfaces para acesso ao banco de dados utilizando o Spring Data JPA.
+### 1. **Camada de Modelos (Model)**
 
-3. **Serviços (Service):**
-   - Contém a lógica de negócios para manipular as entidades.
+Define as classes que representam as tabelas do banco de dados:
 
-4. **Controladores (Controller):**
-   - Endpoints RESTful para criar, atualizar, buscar e excluir registros.
+- **RegistroProducao**: Gerencia registros da produção de energia.
+- **Cliente**: Armazena informações dos clientes.
+- **Instalacao**: Representa as instalações solares.
+- **Contrato**: Define contratos de serviço entre clientes e instalações.
+- **RegistroConsumo**: Registra o consumo de energia dos clientes.
 
-## Entidades e Atributos
+### 2. **Repositórios (Repository)**
 
-### RegistroProducao
+Interfaces para acesso e manipulação dos dados no banco de dados utilizando o **Spring Data JPA**.
 
-- `id` (UUID): Identificador único do registro.
-- `dataProducao` (String): Data da produção de energia.
-- `quantidade` (double): Quantidade de energia produzida.
-- `descricao` (String): Informações adicionais sobre o registro.
-- `instalacao` (Instalacao): Relacionamento com uma instalação.
-- `cliente` (Cliente): Relacionamento com um cliente.
+### 3. **Serviços (Service)**
 
-### Cliente
+Contém a lógica de negócios, garantindo que as operações de manipulação dos dados sejam realizadas de forma consistente e segura.
 
-- `id` (UUID): Identificador único do cliente.
-- `nome` (String): Nome do cliente.
-- `email` (String): Endereço de e-mail do cliente.
+### 4. **Controladores (Controller)**
 
-### Instalacao
+Define os endpoints da API RESTful para interação com as funcionalidades do sistema.
 
-- `id` (UUID): Identificador único da instalação.
-- `nome` (String): Nome ou descrição da instalação.
 
-## Funcionalidades Principais
+## Entidades e seus Atributos
 
-1. **Criar um registro de produção**:
-   - Um registro está associado a um cliente e uma instalação.
+### **RegistroProducao**
 
-2. **Listar registros de produção**:
-   - Buscar todos os registros existentes ou por critérios como ID ou data.
+- **`id`**: Identificador único (UUID).
+- **`dataProducao`**: Data da produção de energia (String, pode ser ajustado para `LocalDate`).
+- **`quantidade`**: Quantidade de energia produzida (double).
+- **`descricao`**: Informações adicionais sobre o registro (String).
+- **`instalacao`**: Relacionamento com uma instalação.
+- **`cliente`**: Relacionamento com um cliente.
 
-3. **Atualizar um registro existente**:
-   - Modificar os atributos de um registro específico.
+### **Cliente**
 
-4. **Excluir registros**:
-   - Remover registros do sistema.
+- **`clienteUuid`**: Identificador único do cliente (UUID).
+- **`nome`**: Nome do cliente (String).
+- **`endereco`**: Endereço do cliente (String).
+- **`documento`**: Número do documento (String).
+- **`tipo`**: Tipo de documento (CPF, CNPJ, etc.).
+- **`cep`**: CEP do cliente (String).
 
-5. **Gerenciamento de Clientes e Instalações**:
-   - Operações CRUD completas.
+### **Instalacao**
+
+- **`id`**: Identificador único da instalação (UUID).
+- **`nome`**: Nome ou descrição da instalação (String).
+- **`endereco`**: Endereço onde está instalada (String).
+- **`capacidade`**: Capacidade de produção da instalação (double).
+- **`cliente`**: Relacionamento com o cliente responsável.
+
+### **Contrato**
+
+- **`id`**: Identificador único do contrato (UUID).
+- **`cliente`**: Relacionamento com o cliente.
+- **`instalacao`**: Relacionamento com a instalação.
+- **`dataInicio`**: Data de início do contrato (String).
+- **`dataFim`**: Data de término do contrato (String).
+- **`descricao`**: Informações adicionais (String).
+
+### **RegistroConsumo**
+
+- **`id`**: Identificador único do registro (UUID).
+- **`cliente`**: Relacionamento com o cliente.
+- **`dataConsumo`**: Data do consumo (String).
+- **`quantidade`**: Quantidade de energia consumida (double).
+
+
+## Funcionalidades Implementadas
+
+1. **Gestão de Produção de Energia Solar**
+   - Criação, atualização, exclusão e listagem de registros de produção.
+2. **Gestão de Clientes**
+   - Operações CRUD completas para cadastro e gerenciamento de clientes.
+3. **Gestão de Instalações**
+   - Operações para criar, atualizar, listar e excluir instalações solares.
+4. **Gerenciamento de Contratos**
+   - Cadastro de contratos associando clientes às suas instalações.
+5. **Registro de Consumo**
+   - Rastrear e gerenciar o consumo de energia dos clientes.
+
+
+## Tecnologias Utilizadas:
+
+1. **Pré-requisitos:**
+   - Java 17
+   - Maven 3.8
+   - Banco de Dados (H2)

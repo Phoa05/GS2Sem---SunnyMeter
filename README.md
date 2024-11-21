@@ -97,8 +97,6 @@ Define os endpoints da API REST para interação com as funcionalidades do siste
 
 
 ## Tecnologias Utilizadas:
-
-1. **Pré-requisitos:**
    - Java 17
    - Maven 3.8
    - Banco de Dados (H2)

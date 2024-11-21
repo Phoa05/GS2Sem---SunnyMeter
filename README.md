@@ -102,3 +102,6 @@ Define os endpoints da API REST para interação com as funcionalidades do siste
    - Java 17
    - Maven 3.8
    - Banco de Dados (H2)
+   - Spring Data JPA
+   - Spring Boot
+   - Spring Web

@@ -12,7 +12,7 @@ public class RegistroProducao {
     private UUID id;
 
     @Column(name = "data_producao", nullable = false)
-    private String dataProducao; // Pode ser alterado para LocalDate ou LocalDateTime conforme necessário
+    private String dataProducao;
 
     @Column(name = "quantidade", nullable = false)
     private double quantidade;
